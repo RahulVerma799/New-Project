@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { shopContext } from '../context/ShopContext';
+import { assets } from '../assets/assets';
+import RelatedProducts from '../component/RelatedProducts';
 
 const Product = () => {
   const {productId}=useParams();
   const {products}=useContext(shopContext);
   const [productData,setProductData]=useState(false);
   const [image,setImage]=useState('')
+  const [size,setSize]=useState('');
 
   const fetchProductData=async()=>{
           products.map((item)=>{
@@ -32,13 +35,70 @@ const Product = () => {
                   <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
                         {
                           productData.image.map((item,index)=>(
-                            <img src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer'/>
+                            <img onClick={()=>setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer'/>
                           ))
                         }
                   </div>
+                  <div className='w-full sm:w-[80%]'>
+                    <img className='w-full h-auto' src={image} alt=''/>
+                  </div>
               </div>
+
+              {/*product info*/}
+                        <div className='flex-1'>
+                          <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
+                          <div className='flex items-center gap-1 mt-2'>
+                            <img src={assets.star_icon} alt='' className='w-3.5'/>
+                            <img src={assets.star_icon} alt='' className='w-3.5'/>
+                            <img src={assets.star_icon} alt='' className='w-3.5'/>
+                            <img src={assets.star_icon} alt='' className='w-3.5'/>
+                            <img src={assets.star_dull_icon} alt='' className='w-3.5'/>
+                            <p className='pl-2'>(122)</p>
+                            
+                          </div>
+
+                          <p className='mt-5 text-3xl font-medium'>${productData.price}</p>
+                          <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
+                            <div className='flex flex-col gap-4 my-8'>
+                              <p>Select size</p> 
+                              <div className='flex gap-2'>
+                                {
+                                  productData.sizes.map((item,index)=>{
+                                    return (
+                                      <button onClick={()=>setSize(item)} className={`border py-2 px-4 bg-gray-200 ${item===size ?'border-orange-400':''}`} key={index}>{item}</button>
+                                    )
+                                  })
+                                }
+                              </div>
+
+                            </div>
+                            <button className='bg-black text-white px-8 py-2 active:bg-gray-700'>Add to Cart</button>
+                                <hr className='mt-8 sm:w-4/5'/>
+                                <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
+                                    <p>100% original</p>
+                                    <p>Cash on delivery is available</p>
+                                </div>
+                        </div>
+                        
         </div>
 
+
+        {/*----------Description & Review Section*/}
+
+        <div className='mt-20'>
+          <div className='flex'>
+            <b className='border px-5 py-3 text-sm'>Description</b>
+            <p className='border px-5 py-3 text-sm'>Review(122)</p>
+          </div>
+
+          <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600'>
+            <p>India has an Internet user base of about 690.0 million as of November 2023, about 40% of the population.[1] Despite being the second-largest user base in world, only behind China</p>
+            <p>cash on delivery is the most preferred payment method, accumulating 75% of the e-retail activities.[4] Demand for international consumer products (including long-tail items) is growing faster than in-country supply from authorised distributors and e-commerce offerings.</p>
+          </div>
+        </div>
+
+        {/*----------display related products*/}
+        <RelatedProducts category={productData.category} subCategory={productData.subCategory}/>
     </div>
   ):<div className='opacity-0'></div>
 }
